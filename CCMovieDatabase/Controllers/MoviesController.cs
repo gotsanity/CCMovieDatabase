@@ -37,10 +37,22 @@ namespace CCMovieDatabase.Controllers
             var movie = await _context.Movie
                 .Include(m => m.Rating)
                 .FirstOrDefaultAsync(m => m.Id == id);
+            
             if (movie == null)
             {
                 return NotFound();
             }
+
+            //ViewBag.characters = await _context.Characters.Where(c => c.MovieId == id).ToListAsync();
+
+            //var actors = new List<ActingCredit>();
+
+            //foreach (var character in characters)
+            //{
+            //    actors.Add()
+            //}
+
+
 
             return View(movie);
         }

@@ -46,6 +46,32 @@ namespace CCMovieDatabase.Data
 
             modelBuilder.Entity<Movie>().HasData(movies);
 
+            var characters = new List<Character>
+            {
+                new Character { CharacterId = 1, Name = "Shrek", Description = "Big Green Oaf", MovieId = 1 },
+                new Character { CharacterId = 2, Name = "Shrek", Description = "Big Green Oaf", MovieId = 2 },
+            };
+
+            modelBuilder.Entity<Character>().HasData(characters);
+
+
+            var people = new List<Person>
+            {
+                new Person { FirstName = "Mike", LastName = "Myers", PersonId = 1 },
+            };
+
+            modelBuilder.Entity<Person>().HasData(people);
+
+            var actingCredits = new List<ActingCredit>
+            {
+                new ActingCredit { PersonId = 1, CharacterId = 1, ActingCreditId = 1 },
+                new ActingCredit { PersonId = 1, CharacterId = 2, ActingCreditId = 2 },
+            };
+
+            modelBuilder.Entity<ActingCredit>().HasData(actingCredits);
+
+            
+
             // article seed data
             var articles = new List<Article>
             { 
@@ -120,6 +146,10 @@ namespace CCMovieDatabase.Data
 
             modelBuilder.Entity<Category>().Navigation(c => c.Products).AutoInclude();
             modelBuilder.Entity<Product>().Navigation(p => p.Category).AutoInclude();
+            modelBuilder.Entity<Movie>().Navigation(m => m.Characters).AutoInclude();
+            modelBuilder.Entity<Character>().Navigation(c => c.ActingCredit).AutoInclude();
+            modelBuilder.Entity<ActingCredit>().Navigation(a => a.Person).AutoInclude();
+            
         }
     }
 }

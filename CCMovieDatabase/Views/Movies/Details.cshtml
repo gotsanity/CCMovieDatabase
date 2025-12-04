@@ -41,6 +41,21 @@
             @Html.DisplayFor(model => model.Rating.RatingId)
         </dd>
     </dl>
+
+    @* add a loop for characters *@
+    @if (Model.Characters.Count >= 1)
+    {
+        <h3>Characters</h3>
+        <ul>
+            @foreach (var character in Model.Characters)
+            {
+                <li>@character.Name - @character.Description - Actor: @character.ActingCredit.Person.FirstName @character.ActingCredit.Person.LastName</li>
+            }
+        </ul>
+    }
+    
+    
+
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |

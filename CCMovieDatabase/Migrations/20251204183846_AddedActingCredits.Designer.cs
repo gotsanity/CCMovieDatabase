@@ -4,6 +4,7 @@ using CCMovieDatabase.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CCMovieDatabase.Migrations
 {
     [DbContext(typeof(MovieContext))]
-    partial class MovieContextModelSnapshot : ModelSnapshot
+    [Migration("20251204183846_AddedActingCredits")]
+    partial class AddedActingCredits
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,6 +40,8 @@ namespace CCMovieDatabase.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("ActingCreditId");
+
+                    b.HasIndex("CharacterId");
 
                     b.HasIndex("PersonId");
 
@@ -203,9 +208,6 @@ namespace CCMovieDatabase.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CharacterId"));
 
-                    b.Property<int>("ActingCreditId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -218,9 +220,6 @@ namespace CCMovieDatabase.Migrations
 
                     b.HasKey("CharacterId");
 
-                    b.HasIndex("ActingCreditId")
-                        .IsUnique();
-
                     b.HasIndex("MovieId");
 
                     b.ToTable("Characters");
@@ -229,7 +228,6 @@ namespace CCMovieDatabase.Migrations
                         new
                         {
                             CharacterId = 1,
-                            ActingCreditId = 0,
                             Description = "Big Green Oaf",
                             MovieId = 1,
                             Name = "Shrek"
@@ -237,7 +235,6 @@ namespace CCMovieDatabase.Migrations
                         new
                         {
                             CharacterId = 2,
-                            ActingCreditId = 0,
                             Description = "Big Green Oaf",
                             MovieId = 2,
                             Name = "Shrek"
@@ -442,30 +439,30 @@ namespace CCMovieDatabase.Migrations
 
             modelBuilder.Entity("CCMovieDatabase.Models.ActingCredit", b =>
                 {
+                    b.HasOne("CCMovieDatabase.Models.Character", "Character")
+                        .WithMany()
+                        .HasForeignKey("CharacterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("CCMovieDatabase.Models.Person", "Person")
                         .WithMany("ActingCredits")
                         .HasForeignKey("PersonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Character");
+
                     b.Navigation("Person");
                 });
 
             modelBuilder.Entity("CCMovieDatabase.Models.Character", b =>
                 {
-                    b.HasOne("CCMovieDatabase.Models.ActingCredit", "ActingCredit")
-                        .WithOne("Character")
-                        .HasForeignKey("CCMovieDatabase.Models.Character", "ActingCreditId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("CCMovieDatabase.Models.Movie", "Movie")
                         .WithMany("Characters")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("ActingCredit");
 
                     b.Navigation("Movie");
                 });
@@ -509,12 +506,6 @@ namespace CCMovieDatabase.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("CCMovieDatabase.Models.ActingCredit", b =>
-                {
-                    b.Navigation("Character")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("CCMovieDatabase.Models.Category", b =>
